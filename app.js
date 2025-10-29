@@ -6,5 +6,6 @@ const server = http.createServer((req, res) => {
   res.end('Hello from CodePipeline + CodeDeploy!\n');
 });
 server.listen(port, () => {
+  console.log("CodePipeline test trigger <date>");
   console.log(`Server listening on ${port}`);
 });
