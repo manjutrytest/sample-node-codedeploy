@@ -1,19 +1,28 @@
 version: 0.2
 
+env:
+  variables:
+    EC2_HOST: "3.110.151.18"
+    EC2_USER: "ec2-user"
+    EC2_KEY_NAME: ""cicdkeypair.pem""
+
 phases:
   install:
     runtime-versions:
       nodejs: 16
     commands:
-      - echo "Installing npm dependencies..."
+      - echo "Installing dependencies"
       - npm install
   build:
     commands:
-      - echo "Running tests..."
+      - echo "Running tests"
       - npm test
-      - echo "Build completed"
-
+  post_build:
+    commands:
+      - echo "Deploying to EC2 instance..."
+      - chmod 600 $EC2_KEY_NAME
+      - scp -o StrictHostKeyChecking=no -i $EC2_KEY_NAME -r . $EC2_USER@$EC2_HOST:/home/ec2-user/sample-app
+      - ssh -o StrictHostKeyChecking=no -i $EC2_KEY_NAME $EC2_USER@$EC2_HOST "pkill -f app.js || true && cd /home/ec2-user/sample-app && nohup node app.js > app.log 2>&1 &"
 artifacts:
   files:
     - '**/*'
-  discard-paths: no
