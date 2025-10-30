@@ -1,2 +1,2 @@
 # sample-node-codedeploy
-Sample code deploy by manju
+Sample code deploy by manjunath
